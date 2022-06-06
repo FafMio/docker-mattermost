@@ -2,6 +2,14 @@
 
 version: "2.4"
 
+networks:
+    webproxy:
+        external:
+            name: main_webproxy
+    db:
+        external:
+            name: mariadb_dbproxy
+
 services:
   postgres:
     container_name: mm_postgre
