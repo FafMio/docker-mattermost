@@ -23,7 +23,7 @@ services:
       - /tmp
       - /var/run/postgresql
     volumes:
-      - ./volums/postgres:/var/lib/postgresql/data
+      - ./volumes/postgres:/var/lib/postgresql/data
     environment:
       - TZ
       - POSTGRES_USER
@@ -43,12 +43,12 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - ./volums/mattermost/config:/mattermost/config:rw
-      - ./volums/mattermost/data:/mattermost/data:rw
-      - ./volums/mattermost/logs:/mattermost/logs:rw
-      - ./volums/mattermost/plugins:/mattermost/plugins:rw
-      - ./volums/mattermost/clients_plugins:/mattermost/client/plugins:rw
-      - ./volums/mattermost/bleve_indexes:/mattermost/bleve-indexes:rw
+      - ./volumes/mattermost/config:/mattermost/config:rw
+      - ./volumes/mattermost/data:/mattermost/data:rw
+      - ./volumes/mattermost/logs:/mattermost/logs:rw
+      - ./volumes/mattermost/plugins:/mattermost/plugins:rw
+      - ./volumes/mattermost/clients_plugins:/mattermost/client/plugins:rw
+      - ./volumes/mattermost/bleve_indexes:/mattermost/bleve-indexes:rw
     environment:
       - TZ
       - MM_SQLSETTINGS_DRIVERNAME
