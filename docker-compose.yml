@@ -1,0 +1,70 @@
+# https://docs.docker.com/compose/environment-variables/
+
+version: "2.4"
+
+services:
+  postgres:
+    container_name: mm_postgre
+    image: postgres:14.3
+    restart: ${RESTART_POLICY}
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - ./volums/postgres:/var/lib/postgresql/data
+    environment:
+      - TZ
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+  
+  mattermost:
+    depends_on:
+      - postgres
+    container_name: mm_app
+    image: mattermost/mattermost-enterprise-edition:release-7.0
+    restart: ${RESTART_POLICY}
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    read_only: false
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./volums/mattermost/config:/mattermost/config:rw
+      - ./volums/mattermost/data:/mattermost/data:rw
+      - ./volums/mattermost/logs:/mattermost/logs:rw
+      - ./volums/mattermost/plugins:/mattermost/plugins:rw
+      - ./volums/mattermost/clients_plugins:/mattermost/client/plugins:rw
+      - ./volums/mattermost/bleve_indexes:/mattermost/bleve-indexes:rw
+    environment:
+      - TZ
+      - MM_SQLSETTINGS_DRIVERNAME
+      - MM_SQLSETTINGS_DATASOURCE
+      - MM_BLEVESETTINGS_INDEXDIR
+      - MM_SERVICESETTINGS_SITEURL
+
+  nginx:
+      image: nginx:${NGINX_VERSION}
+      restart: always
+      volumes:
+          - ./config/nginx.conf:/etc/nginx/nginx.conf
+          - ./logs/nginx:/var/log/nginx
+          - /etc/timezone:/etc/timezone:ro
+          - /etc/localtime:/etc/localtime:ro
+      links:
+          - php
+      environment:
+          - VIRTUAL_HOST=${APP_DOMAINS}
+          - VIRTUAL_PORT=80
+          - LETSENCRYPT_HOST=${APP_DOMAINS}
+          - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      expose:
+          - 80
+      networks:
+          - webproxy
+          - default
