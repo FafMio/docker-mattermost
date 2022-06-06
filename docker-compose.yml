@@ -57,7 +57,7 @@ services:
           - /etc/timezone:/etc/timezone:ro
           - /etc/localtime:/etc/localtime:ro
       links:
-          - php
+          - mattermost
       environment:
           - VIRTUAL_HOST=${APP_DOMAINS}
           - VIRTUAL_PORT=80
